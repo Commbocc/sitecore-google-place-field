@@ -7,9 +7,7 @@ module.exports = {
     path: path.resolve(__dirname, './dist'),
     publicPath: '/dist/',
     filename: 'build.js',
-    library: 'SitecoreGooglePlaceField',
-    libraryTarget: 'umd',
-    libraryExport: 'default',
+    libraryTarget: 'umd'
   },
   module: {
     rules: [

@@ -1,52 +1,71 @@
 <template>
-  <div id="app" class="bg-white py-5">
-    <div class="container">
+  <main id="app" class="d-flex flex-column">
 
-      <form class="form" @submit.prevent="findCandidates">
-        <div class="form-group">
-          <div class="input-group input-group-lg">
-            <input class="form-control" v-model="userInput" placeholder="Search..." aria-label="Search for address candidates" aria-describedby="searchButton" required>
-            <div class="input-group-append">
-              <button class="btn btn-outline-secondary" type="submit" id="searchButton">Search</button>
+    <header class="bg-dark text-white py-3">
+      <div class="container">
+        <p class="lead mb-0">
+          Use the search box to look up a <a href="https://developers.google.com/places/web-service/intro" target="_blank">Google Place</a>
+        </p>
+      </div>
+    </header>
+
+    <section class="flex-grow-1 bg-white py-5">
+      <div class="container">
+
+        <form class="form" @submit.prevent="findCandidates">
+          <div class="form-group">
+            <div class="input-group input-group-lg">
+              <input class="form-control" v-model="userInput" placeholder="Search..." aria-label="Search for address candidates" aria-describedby="searchButton" required>
+              <div class="input-group-append">
+                <button class="btn btn-outline-dark" type="submit" id="searchButton">Search</button>
+              </div>
+            </div>
+
+            <div v-if="false" class="form-check text-right mt-2">
+              <input v-model="showMap" class="form-check-input" type="checkbox" id="showMap">
+              <label class="form-check-label" for="showMap">
+                Show Map
+              </label>
             </div>
           </div>
+        </form>
+
+        <div v-show="showMap" is="Map" ref="googleMap"></div>
+
+        <div v-if="results.length" class="list-group list-group-flush">
+          <a v-for="p in results" href="#" class="list-group-item list-group-item-action" @click.prevent="selectPlace(p)">
+            {{ p.name }}
+            <div class="d-flex justify-content-between small text-muted">
+              <span>
+                {{ p.formatted_address }}
+              </span>
+              <span>
+                {{ p.place_id }}
+              </span>
+            </div>
+          </a>
         </div>
-      </form>
 
-      <div v-if="showMap" class="embed-responsive embed-responsive-16by9">
-        <div id="map" ref="map" class="embed-responsive-item"></div>
+        <div v-else class="bg-light text-center p-3 h4">
+          No Results
+        </div>
+
+        <div class="small text-right mt-3">
+          <a href="https://support.google.com/maps/answer/6320846" target="_blank">
+            Add a place to google maps
+          </a>
+        </div>
+
       </div>
-
-      <div v-if="results.length" class="list-group">
-        <a v-for="p in results" href="#" class="list-group-item list-group-item-action" @click.prevent="selectPlace(p)">
-          {{ p.name }}
-          <div class="d-flex justify-content-between small text-muted">
-            <span>
-              {{ p.formatted_address }}
-            </span>
-            <span>
-              {{ p.place_id }}
-            </span>
-          </div>
-        </a>
-      </div>
-
-      <div v-else class="bg-light text-center p-3 h4">
-        No Results
-      </div>
-
-      <div class="small text-right mt-3">
-        <a href="https://support.google.com/maps/answer/6320846" target="_blank">
-          Add a place to google maps
-        </a>
-      </div>
-
-    </div>
-  </div>
+    </section>
+  </main>
 </template>
 
 <script>
+import Map from './components/Map'
+
 export default {
+  components: { Map },
   data () {
     return {
       showMap: false,
@@ -56,16 +75,18 @@ export default {
     }
   },
   mounted () {
-    this.service = new google.maps.places.PlacesService(document.createElement('div'))
+    this.service = new google.maps.places.PlacesService(this.$refs.googleMap.map)
   },
   methods: {
     findCandidates (e) {
-      console.log('findCandidates');
       this.results = []
-      this.service.findPlaceFromQuery({
+
+      let request = {
         query: this.userInput,
         fields: ['name', 'formatted_address', 'name', 'place_id', 'geometry'],
-      }, this.callback)
+      }
+
+      this.service.findPlaceFromQuery(request, this.callback)
     },
     callback (results, status) {
       if (status == google.maps.places.PlacesServiceStatus.OK) {
@@ -73,8 +94,11 @@ export default {
       }
     },
     selectPlace (place) {
-      console.log('place', place)
+      window.top.returnValue = JSON.stringify(place)
+      window.top.dialogClose()
     }
   }
 }
 </script>
+
+<style src="./assets/main.css"></style>
