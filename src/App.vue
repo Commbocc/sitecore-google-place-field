@@ -15,7 +15,7 @@
         <form class="form" @submit.prevent="findCandidates">
           <div class="form-group">
             <div class="input-group input-group-lg">
-              <input class="form-control" v-model="userInput" placeholder="Search..." aria-label="Search for address candidates" aria-describedby="searchButton" required>
+              <input ref="search" class="form-control" v-model="userInput" placeholder="Search..." aria-label="Search for address candidates" aria-describedby="searchButton" required>
               <div class="input-group-append">
                 <button class="btn btn-outline-dark" type="submit" id="searchButton">Search</button>
               </div>
@@ -75,6 +75,7 @@ export default {
     }
   },
   mounted () {
+    this.$refs.search.focus()
     this.service = new google.maps.places.PlacesService(this.$refs.googleMap.map)
   },
   methods: {
