@@ -1,15 +1,7 @@
 <template>
   <main id="app" class="d-flex flex-column">
 
-    <header class="bg-dark text-white py-3">
-      <div class="container">
-        <p class="lead mb-0">
-          Use the search box to look up a <a href="https://developers.google.com/places/web-service/intro" target="_blank">Google Place</a>
-        </p>
-      </div>
-    </header>
-
-    <section class="flex-grow-1 bg-white py-5">
+    <section class="order-12 flex-grow-1 bg-white py-5">
       <div class="container">
 
         <form class="form" @submit.prevent="findCandidates">
@@ -58,6 +50,15 @@
 
       </div>
     </section>
+
+    <footer class="order-1 bg-dark text-white py-3">
+      <div class="container">
+        <p class="mb-0">
+          Use the search box to look up a <a href="https://developers.google.com/places/web-service/intro" target="_blank">Google Place</a>
+        </p>
+      </div>
+    </footer>
+
   </main>
 </template>
 
